@@ -1,3 +1,4 @@
+import { responseErrorMessage } from './responseError.js'
 import React, { useState, useEffect } from 'react'
 import UrlForm from './components/UrlForm'
 import ScoreGauge from './components/ScoreGauge'
@@ -56,15 +57,7 @@ export default function App() {
       })
 
       if (!response.ok) {
-        let errMessage = `HTTP error ${response.status}`
-        try {
-          const errJson = await response.json()
-          errMessage = errJson.detail || errJson.error || errMessage
-        } catch {
-          const errText = await response.text()
-          if (errText) errMessage = errText
-        }
-        throw new Error(errMessage)
+        throw new Error(await responseErrorMessage(response))
       }
 
       const resData = await response.json()
